@@ -3,21 +3,19 @@ Node-phantom
 
 This is a bridge between [PhantomJs](http://phantomjs.org/) and [Node.js](http://nodejs.org/).
 
-It is very much similar to the other bridge available, [PhantomJS-Node](https://github.com/sgentle/phantomjs-node), but is different in a few ways:
+This is a port of the node-phantom library to use pure WebSockets. It has the following
+advantages over node-phantom:
 
-  - Way fewer dependencies/layers.
-  - API has the idiomatic error indicator as first parameter to callbacks.
-  - Uses plain Javascript instead of Coffeescript.
-
+  - Fewer dependencies/layers.
+  - No <script> downloads in the client - just uses the WebSocket() API.
+  - Doesn't rely on the onAlert hook for callbacks - uses the onCallback mechanism.
+  - Doesn't use the unreliable and huge socket.io.
 
 Requirements
 ------------
 You will need to install PhantomJS first. The bridge assumes that the "phantomjs" binary is available in the PATH.
 
-The only other dependency for using it is [socket.io](http://socket.io/).
-
 For running the tests you will need [Expresso](http://visionmedia.github.com/expresso/). The tests require PhantomJS 1.6 or newer to pass.
-
 
 Installing
 ----------
@@ -27,7 +25,7 @@ Installing
 
 Usage
 -----
-You can use it pretty much like you would use PhantomJS-Node, for example this is an adaptation of a [web scraping example](http://net.tutsplus.com/tutorials/javascript-ajax/web-scraping-with-node-js/) :
+You can use it exactly like you would use Node-Phantom, for example this is an adaptation of a [web scraping example](http://net.tutsplus.com/tutorials/javascript-ajax/web-scraping-with-node-js/) :
 
 ```javascript
 var phantom=require('node-phantom');
@@ -92,5 +90,5 @@ You can also have a look at the test folder to see some examples of using the AP
 
 Other
 -----
-Made by Alex Scheel Meyer. Released to the public domain.
+Made by Matt Sergeant for Hubdoc Inc.
 
