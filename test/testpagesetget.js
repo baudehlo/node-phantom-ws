@@ -1,4 +1,4 @@
-var phantom=require('../node-phantom');
+var phantom=require('../node-phantom-ws');
 
 exports.testPhantomPageSetGet=function(beforeExit,assert){
 	phantom.create(function(error,ph){

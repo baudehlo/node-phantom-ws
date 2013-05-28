@@ -1,5 +1,5 @@
 var http=require('http');
-var phantom=require('../node-phantom');
+var phantom=require('../node-phantom-ws');
 
 var server=http.createServer(function(request,response){
 	if(request.url==='/test.js'){

@@ -1,7 +1,7 @@
 var http = require('http'),
 	url = require('url'),
     os = require('os'),
-	phantom = require('../node-phantom'),
+	phantom = require('../node-phantom-ws'),
 	usingProxy = false,
 	phantomInstance;
 
