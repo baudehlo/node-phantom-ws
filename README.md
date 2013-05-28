@@ -7,7 +7,7 @@ This is a port of the node-phantom library to use pure WebSockets. It has the fo
 advantages over node-phantom:
 
   - Fewer dependencies/layers.
-  - No <script> downloads in the client - just uses the WebSocket() API.
+  - No &lt;script> downloads in the client - just uses the WebSocket() API.
   - Doesn't rely on the onAlert hook for callbacks - uses the onCallback mechanism.
   - Doesn't use the unreliable and huge socket.io.
 
