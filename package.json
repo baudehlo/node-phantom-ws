@@ -1,0 +1,20 @@
+{
+  "author": "Matt Sergeant (matt@hubdoc.com)",
+  "name": "node-phantom",
+  "description": "bridge between node.js and PhantomJS",
+  "version": "1.0.0",
+  "homepage": "https://github.com/baudehlo/node-phantom-ws",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/baudehlo/node-phantom-ws.git"
+  },
+  "main": "node-phantom-ws.js",
+  "scripts": {
+    "test": "expresso"
+  },
+  "dependencies": {"ws": ""},
+  "optionalDependencies": {},
+  "engines": {
+    "node": "*"
+  }
+}
