@@ -2,7 +2,7 @@
   "author": "Matt Sergeant (matt@hubdoc.com)",
   "name": "node-phantom-ws",
   "description": "bridge between node.js and PhantomJS using pure WebSockets",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "homepage": "https://github.com/baudehlo/node-phantom-ws",
   "repository": {
     "type": "git",

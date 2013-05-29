@@ -97,10 +97,13 @@ module.exports = {
 
         	        function request (args, callback) {
         	            args.splice(1,0,cmdid);
-        	            ws.send(JSON.stringify(args));
-
-        	            cmds[cmdid] = {cb:callback};
-        	            cmdid++;
+        	            ws.send(JSON.stringify(args), function (err) {
+                            if (err) {
+                                return callback(err);
+                            }
+                            cmds[cmdid] = {cb:callback};
+                            cmdid++;
+                        });
         	        }
         	        
 	            	ws.on('message', function (data, flags) {
@@ -114,7 +117,7 @@ module.exports = {
 		                        var pageProxy = {
 		                            open: function(url, callback) {
 		                                if (callback === undefined) {
-		                                    request([id, 'pageOpen', url]);
+		                                    request([id, 'pageOpen', url], callbackOrDummy(null));
 		                                } else {
 		                                    request([id, 'pageOpenWithCallback', url], callback);
 		                                }
@@ -164,7 +167,7 @@ module.exports = {
 		                        delete cmds[cmdId];
 		                        break;
 		                    case 'phantomExited':
-		                        request([0,'exitAck']);
+		                        request([0,'exitAck'], callbackOrDummy(null));
 		                        try {
 		                            server.close();
 		                        } catch (e) {
