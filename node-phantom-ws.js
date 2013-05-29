@@ -49,17 +49,17 @@ module.exports = {
         
         var server = http.createServer(function(request,response) {
         	response.writeHead(200, {"Content-Type": "text/html"});
-            response.end('<html><head><script type="text/javascript">\n\
-                window.onload = function () {\n\
+            response.end('<html><head></head><body><script type="text/javascript">\n\
+                function connect_home () {
                     var socket = new WebSocket("ws://" + window.location.hostname + ":" + ' + server.address().port + ');\n\
                     socket.onerror = function (err) {\n\
                     	console.log("Error connecting: " + err);\n\
                     }\n\
+                    socket.emit = function (event, data) {\n\
+                        socket.send(JSON.stringify({event: event, data: data}));\n\
+                    }\n\
                     socket.onopen = function (evt) {\n\
                     	// console.log("Opened WS connection!")\n\
-                    	socket.emit = function (event, data) {\n\
-                    		socket.send(JSON.stringify({event: event, data: data}));\n\
-                    	}\n\
                     	window.socket = socket;\n\
                 	}\n\
                 	socket.onmessage = function (evt) {\n\
@@ -68,6 +68,13 @@ module.exports = {
                 		window.callPhantom(event);\n\
                 	}\n\
                 }\n\
+                connect_home();\n\
+                var interval_timer = setInterval(function () {\n\
+                    if (window.socket) {\n\
+                        return clearInterval(interval_timer);\n\
+                    }\n\
+                    connect_home();\n\
+                }, 5000);\n\
             	</script></head><body></body></html>');
         }).listen(function () {
         	var wss = new WebSocketServer({server: server});
@@ -91,13 +98,19 @@ module.exports = {
 
 	            phantom.removeAllListeners('error'); // Let callers handle this
 	            
+                var connection_timeout = setTimeout(function () {
+                    phantom.kill();
+                    callback("Timeout waiting for phantom to setup WebSocket");
+                }, 30000);
+
 	            var pages = {};
 	            var cmds  = {};
 	            var cmdid = 0;
 	            
 	            wss.on('connection', function(ws) {
 	            	// console.log("Got websocket connection");
-
+                    clearTimeout(connection_timeout);
+                    
         	        function request (args, callback) {
         	            args.splice(1,0,cmdid);
         	            ws.send(JSON.stringify(args), function (err) {
@@ -181,7 +194,6 @@ module.exports = {
 		                        } catch (e) {
 		                            console.log('Error closing server:', e);
 		                        }
-		                        io.set('client store expiration', 0);
 		                        cmds[cmdId].cb();
 		                        delete cmds[cmdId];
 		                        break;
