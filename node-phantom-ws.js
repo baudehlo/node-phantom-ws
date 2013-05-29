@@ -71,9 +71,9 @@ module.exports = {
             	</script></head><body></body></html>');
         }).listen(function () {
         	var wss = new WebSocketServer({server: server});
-            server.on('request', function (req, res) {
-                res.setHeader('Access-Control-Allow-Origin', '*');
-            });
+            // server.on('request', function (req, res) {
+            //     res.setHeader('Access-Control-Allow-Origin', '*');
+            // });
         	// console.log("Created wss");
         	wss.on('error', function (err) {
         		console.error("Wss error: " + err);
