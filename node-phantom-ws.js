@@ -104,9 +104,9 @@ module.exports = {
                             if (err) {
                                 return callback(err);
                             }
-                            cmds[cmdid] = {cb:callback};
-                            cmdid++;
                         });
+                        cmds[cmdid] = {cb:callback};
+                        cmdid++;
         	        }
         	        
 	            	ws.on('message', function (data, flags) {
