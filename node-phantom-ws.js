@@ -50,7 +50,7 @@ module.exports = {
         var server = http.createServer(function(request,response) {
         	response.writeHead(200, {"Content-Type": "text/html"});
             response.end('<html><head></head><body><script type="text/javascript">\n\
-                function connect_home () {
+                function connect_home () {\n\
                     var socket = new WebSocket("ws://" + window.location.hostname + ":" + ' + server.address().port + ');\n\
                     socket.onerror = function (err) {\n\
                     	console.log("Error connecting: " + err);\n\
@@ -110,7 +110,7 @@ module.exports = {
 	            wss.on('connection', function(ws) {
 	            	// console.log("Got websocket connection");
                     clearTimeout(connection_timeout);
-                    
+
         	        function request (args, callback) {
         	            args.splice(1,0,cmdid);
         	            ws.send(JSON.stringify(args), function (err) {
