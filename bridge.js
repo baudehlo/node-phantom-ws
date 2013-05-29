@@ -139,6 +139,12 @@ controlpage.onConsoleMessage = function(msg){
 	return console.log('console msg:' + msg);
 };
 
-controlpage.open('http://127.0.0.1:'+port+'/', function(status){
-	// console.log(status);
-});
+function init_phantom () {
+	controlpage.open('http://127.0.0.1:'+port+'/', function(status){
+		if (status !== 'success') {
+			setTimeout(init_phantom, 1000); // try again in 1 second.
+		}
+	});
+}
+
+init_phantom();
