@@ -71,6 +71,9 @@ module.exports = {
             	</script></head><body></body></html>');
         }).listen(function () {
         	var wss = new WebSocketServer({server: server});
+            server.on('request', function (req, res) {
+                res.setHeader('Access-Control-Allow-Origin', '*');
+            });
         	// console.log("Created wss");
         	wss.on('error', function (err) {
         		console.error("Wss error: " + err);
@@ -112,6 +115,11 @@ module.exports = {
 						if (event.event === 'res') {
 		                    var id    = response[0];
 		                    var cmdId = response[1];
+                            if (cmdId) {
+                                if (!cmds[cmdId]) {
+                                    return console.log("Command id " + cmdId + " either already executed or doesn't exist");
+                                }
+                            }
 		                    switch (response[2]) {
 		                    case 'pageCreated':
 		                        var pageProxy = {
