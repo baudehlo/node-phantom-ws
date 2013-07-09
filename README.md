@@ -10,6 +10,7 @@ advantages over node-phantom:
   - No &lt;script> downloads in the client - just uses the WebSocket() API.
   - Doesn't rely on the onAlert hook for callbacks - uses the onCallback mechanism.
   - Doesn't use the unreliable and huge socket.io.
+  - Works under `cluster` (node-phantom does not due to how `server.listen(0)` works in cluster)
 
 Requirements
 ------------
