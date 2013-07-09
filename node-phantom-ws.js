@@ -1,6 +1,30 @@
 var http			= require('http');
 var WebSocketServer = require('ws').Server;
 var spawn 			= require('child_process').spawn;
+var net             = require('net-cluster');
+var util            = require('util');
+
+function HTTPServer(requestListener) {
+  net.Server.call(this, { allowHalfOpen: true });
+
+  if (requestListener) {
+    this.addListener('request', requestListener);
+  }
+
+  // Similar option to this. Too lazy to write my own docs.
+  // http://www.squid-cache.org/Doc/config/half_closed_clients/
+  // http://wiki.squid-cache.org/SquidFaq/InnerWorkings#What_is_a_half-closed_filedescriptor.3F
+  this.httpAllowHalfOpen = false;
+
+  this.addListener('connection', http._connectionListener);
+
+  this.addListener('clientError', function(err, conn) {
+    conn.destroy(err);
+  });
+
+  this.timeout = 2 * 60 * 1000;
+}
+util.inherits(HTTPServer, http.Server);
 
 function callbackOrDummy (callback) {
     if (callback === undefined) callback = function () {};
@@ -47,7 +71,7 @@ module.exports = {
             },100);
         };
         
-        var server = http.createServer(function(request,response) {
+        var server = new HTTPServer(function(request,response) {
         	response.writeHead(200, {"Content-Type": "text/html"});
             response.end('<html><head></head><body><script type="text/javascript">\n\
                 function connect_home () {\n\
@@ -60,6 +84,7 @@ module.exports = {
                     }\n\
                     socket.onopen = function (evt) {\n\
                     	// console.log("Opened WS connection!")\n\
+                        clearTimeout(timer);\n\
                     	window.socket = socket;\n\
                 	}\n\
                 	socket.onmessage = function (evt) {\n\
@@ -67,16 +92,16 @@ module.exports = {
                 		var event = JSON.parse(evt.data);\n\
                 		window.callPhantom(event);\n\
                 	}\n\
+                    var timer = setTimeout(function () {\n\
+                        console.log("Timeout connecting back triggered... Trying again.");\n\
+                        connect_home();\n\
+                    }, 5000)\n\
                 }\n\
                 connect_home();\n\
-                var interval_timer = setInterval(function () {\n\
-                    if (window.socket) {\n\
-                        return clearInterval(interval_timer);\n\
-                    }\n\
-                    connect_home();\n\
-                }, 5000);\n\
             	</script></head><body></body></html>');
-        }).listen(function () {
+        });
+        
+        server.listen(function () {
         	var wss = new WebSocketServer({server: server});
             // server.on('request', function (req, res) {
             //     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -222,6 +247,7 @@ module.exports = {
 		                    case 'pageClosed':
 		                        delete pages[id]; // fallthru
 		                    case 'pageSetDone':
+                            case 'pageSetFnDone':
 		                    case 'pageJsIncluded':
 		                    case 'cookieAdded':
 		                    case 'pageRendered':
@@ -292,7 +318,7 @@ module.exports = {
 	                    }
 	                }
 	                else {
-	                    console.warn('phantom signal:', signal);
+	                    // console.warn('phantom signal:', signal);
 	                    try {
 	                        server.close();
 	                    } catch (e) {

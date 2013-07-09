@@ -12,7 +12,10 @@
   "scripts": {
     "test": "expresso"
   },
-  "dependencies": {"ws": ""},
+  "dependencies": {
+    "ws": "",
+    "net-cluster": ""
+  },
   "optionalDependencies": {},
   "engines": {
     "node": "*"
